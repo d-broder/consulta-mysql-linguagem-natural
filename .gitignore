@@ -1,0 +1,5 @@
+.vscode/
+
+demo/src/config.properties
+
+demo/target/
