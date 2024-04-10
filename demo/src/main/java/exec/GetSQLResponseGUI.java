@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import lmi.LMInterface;
+import lmi.LanguageModelInterface;
 
 public class GetSQLResponseGUI extends JFrame {
     private JTextField questionField;
@@ -49,15 +49,15 @@ public class GetSQLResponseGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String question = questionField.getText();
-                questionArea.setText("Processando pergunta...");
+                questionArea.setText("Processing question...");
 
                 // Adiciona um leve atraso antes de chamar a função getAnswer()
                 Timer timer = new Timer(1000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Processa a pergunta e exibe a resposta
-                        String answer = LMInterface.getLMResponse(question);
-                        questionArea.setText("Pergunta: " + question + "\nResposta: " + answer);
+                        String answer = LanguageModelInterface.getLMResponse(question, "sqlcoder");
+                        questionArea.setText("Question: " + question + "\nAnswer: " + answer);
                     }
                 });
                 timer.setRepeats(false); // Executa apenas uma vez
