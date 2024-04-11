@@ -2,7 +2,7 @@ package exec;
 
 import dao.SQLQuery;
 
-public class GetSQLResponse {
+public class GetSQLResults {
     public static void main(String[] args) {
         SQLQuery sqlQuery = new SQLQuery();
         executeQuery(sqlQuery, "SELECT COUNT(*) AS total FROM customers");
@@ -13,6 +13,6 @@ public class GetSQLResponse {
     private static void executeQuery(SQLQuery sqlQuery, String sql) {
         System.out.println("Query: \"" + sql + "\"");
         System.out.println("Results:");
-        sqlQuery.executeQuery(sql);
+        System.out.println(sqlQuery.executeQuery(sql));
     }
 }

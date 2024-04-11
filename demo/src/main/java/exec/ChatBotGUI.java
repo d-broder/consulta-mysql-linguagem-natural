@@ -15,15 +15,16 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import lmi.LanguageModelInterface;
+import dao.SQLQuery;
+import lmi.ChatResponse;
 
-public class GetSQLResponseGUI extends JFrame {
+public class ChatBotGUI extends JFrame {
     private JTextField questionField;
     private JButton submitButton;
     private JTextArea questionArea;
 
-    public GetSQLResponseGUI() {
-        setTitle("Question Answering System");
+    public ChatBotGUI() {
+        setTitle("SQL Query Chatbot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null); // Centraliza a janela na tela
@@ -32,6 +33,8 @@ public class GetSQLResponseGUI extends JFrame {
     }
 
     private void initComponents() {
+        SQLQuery sqlQuery = new SQLQuery();
+
         // Painel principal
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -40,9 +43,9 @@ public class GetSQLResponseGUI extends JFrame {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
 
-        JLabel questionLabel = new JLabel("Pergunta:");
+        JLabel questionLabel = new JLabel("Question:");
         questionField = new JTextField(20);
-        submitButton = new JButton("Enviar");
+        submitButton = new JButton("Send");
 
         // Adiciona um ouvinte de ação ao botão
         submitButton.addActionListener(new ActionListener() {
@@ -56,7 +59,9 @@ public class GetSQLResponseGUI extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Processa a pergunta e exibe a resposta
-                        String answer = LanguageModelInterface.getLMResponse(question, "sqlcoder");
+                        String sql = ChatResponse.getLMResponseFromQuestion(question);
+                        String answer = sqlQuery.executeQuery(sql);
+                        System.out.println(sql + "\n");
                         questionArea.setText("Question: " + question + "\nAnswer: " + answer);
                     }
                 });
@@ -75,8 +80,9 @@ public class GetSQLResponseGUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(questionArea);
 
         // Adiciona os componentes ao painel principal
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
+
         mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
     }
@@ -85,7 +91,7 @@ public class GetSQLResponseGUI extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GetSQLResponseGUI().setVisible(true);
+                new ChatBotGUI().setVisible(true);
             }
         });
     }
