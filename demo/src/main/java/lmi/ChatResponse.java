@@ -9,7 +9,7 @@ public class ChatResponse {
     static String lmInput;
     static String lmOutput;
 
-    public static String getLMResponseFromQuestion(String question) {
+    public static String getLmResponseFromQuestion(String question) {
         lmInput = getLmInput(question);
         lmOutput = LanguageModelInterface.getLMResponse(lmInput);
         return lmOutput;

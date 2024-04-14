@@ -59,7 +59,7 @@ public class ChatBotGUI extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Processa a pergunta e exibe a resposta
-                        String sql = ChatResponse.getLMResponseFromQuestion(question);
+                        String sql = ChatResponse.getLmResponseFromQuestion(question);
                         String answer = sqlQuery.executeQuery(sql);
                         System.out.println(sql + "\n");
                         questionArea.setText("Question: " + question + "\nAnswer: " + answer);

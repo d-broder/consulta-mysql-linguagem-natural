@@ -14,7 +14,7 @@ public class ChatBotTerminal {
         System.out.println(lmInput);
         System.out.println("Processing question...");
 
-        String lmResponse = ChatResponse.getLMResponseFromQuestion(question);
+        String lmResponse = ChatResponse.getLmResponseFromQuestion(question);
 
         System.out.println("- Language model: \"" + lmodel + "\"\n- SQL command: \"" + lmResponse + "\"");
 
