@@ -6,7 +6,8 @@ import lmi.LanguageModelInterface;
 
 public class ChatBotTerminal {
     public static void main(String[] args) {
-        SQLQuery sqlQuery = new SQLQuery();
+        String database = "teste-api-2";
+        SQLQuery sqlQuery = new SQLQuery(database);
         String question = "What are the names of all the products in the database?";
         String lmodel = LanguageModelInterface.getLModel();
         String lmInput = ChatResponse.getLmInput(question);

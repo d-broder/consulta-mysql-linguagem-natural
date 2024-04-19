@@ -11,8 +11,8 @@ import factory.ConnectionFactory;
 public class SQLQuery {
     private Connection connection;
 
-    public SQLQuery() {
-        this.connection = new ConnectionFactory().getConnection();
+    public SQLQuery(String database) {
+        this.connection = new ConnectionFactory().getConnection(database);
     }
 
     public String executeQuery(String sql) {

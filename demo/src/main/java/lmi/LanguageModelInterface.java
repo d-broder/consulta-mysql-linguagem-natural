@@ -6,7 +6,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
 public class LanguageModelInterface {
-    static String lModel = "lmstudio/nsql";
+    static String lModel = "ollama/sqlcoder";
 
     public static String getLModel() {
         return lModel;
@@ -25,11 +25,8 @@ public class LanguageModelInterface {
             case "ollama/nsql":
                 model = buildOllamaChatModel("nsql");
                 break;
-            case "lmstudio/sqlcoder":
-                model = buildLocalAiChatModel("TheBloke/sqlcoder2-GGUF/sqlcoder2.Q2_K.gguf");
-                break;
-            case "lmstudio/nsql":
-                model = buildLocalAiChatModel("motherduckdb/DuckDB-NSQL-7B-v0.1-GGUF/DuckDB-NSQL-7B-v0.1-q8_0.gguf");
+            case "lmstudio":
+                model = buildLocalAiChatModel();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid LM type: " + lModel);
@@ -47,10 +44,10 @@ public class LanguageModelInterface {
     }
 
     // LMStudio
-    private static LocalAiChatModel buildLocalAiChatModel(String modelName) {
+    private static LocalAiChatModel buildLocalAiChatModel() {
         return LocalAiChatModel.builder()
                 .baseUrl("http://localhost:1234/v1/")
-                .modelName("a")
+                .modelName("anyModelName")
                 .temperature(0.6)
                 .build();
     }

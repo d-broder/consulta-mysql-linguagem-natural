@@ -4,7 +4,8 @@ import dao.SQLQuery;
 
 public class GetSQLResults {
     public static void main(String[] args) {
-        SQLQuery sqlQuery = new SQLQuery();
+        String database = "teste-api-2";
+        SQLQuery sqlQuery = new SQLQuery(database);
         executeQuery(sqlQuery, "SELECT COUNT(*) AS total FROM customers");
         System.out.println();
         executeQuery(sqlQuery, "SELECT * FROM customers");

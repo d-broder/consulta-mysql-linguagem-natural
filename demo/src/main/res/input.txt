@@ -1,17 +1,7 @@
 # Instructions:
-Your task is to generate a SQL query that can be executed on a database to answer a specific question based on the given database schema.
-
-## Rules:
-- Deliberately go through the question and database schema word by word to appropriately answer the question;
-- Use Table Aliases to prevent ambiguity. For example, `SELECT table1.col1, table2.col1 FROM table1 JOIN table2 ON table1.id = table2.id`;
-- When creating a ratio, always cast the numerator as float;
-- The output should strictly be the SQL code in MySQL format. No additional information or text should be included.
-
-## Task:
-Generate a SQL query that can be executed on a database to answer the following question:
+Your task is to generate a SQL query that can be executed on a database to answer a specific question based on the given database schema. The question is:
 "{question}"
 
 Your SQL query should be constructed based on the provided database schema below.
-Please ensure that the SQL query you generate is capable of providing the answer when executed in a MySQL database environment.
 
 {schema}

@@ -33,7 +33,8 @@ public class ChatBotGUI extends JFrame {
     }
 
     private void initComponents() {
-        SQLQuery sqlQuery = new SQLQuery();
+        String database = "teste-api-2";
+        SQLQuery sqlQuery = new SQLQuery(database);
 
         // Painel principal
         JPanel mainPanel = new JPanel();
@@ -62,7 +63,7 @@ public class ChatBotGUI extends JFrame {
                         String sql = ChatResponse.getLmResponseFromQuestion(question);
                         String answer = sqlQuery.executeQuery(sql);
                         System.out.println(sql + "\n");
-                        questionArea.setText("Question: " + question + "\nAnswer: " + answer);
+                        questionArea.setText("Question: " + question + "\nAnswer: \n" + answer);
                     }
                 });
                 timer.setRepeats(false); // Executa apenas uma vez

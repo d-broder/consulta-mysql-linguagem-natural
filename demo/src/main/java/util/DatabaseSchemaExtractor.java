@@ -9,12 +9,12 @@ import factory.ConnectionFactory;
 
 public class DatabaseSchemaExtractor {
 
-    public String extractSchema() {
+    public String extractSchema(String database) {
         Connection connection = null;
         StringBuilder schema = new StringBuilder();
 
         try {
-            connection = new ConnectionFactory().getConnection();
+            connection = new ConnectionFactory().getConnection(database);
 
             // Obtém o nome do banco de dados
             String databaseName = connection.getCatalog();
@@ -80,7 +80,7 @@ public class DatabaseSchemaExtractor {
 
     public static void main(String[] args) {
         DatabaseSchemaExtractor extractor = new DatabaseSchemaExtractor();
-        String schema = extractor.extractSchema();
+        String schema = extractor.extractSchema("teste-api-2");
         System.out.println(schema);
     }
 }
