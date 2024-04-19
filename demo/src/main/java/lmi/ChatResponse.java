@@ -4,20 +4,27 @@ import util.DatabaseSchemaExtractor;
 import util.ReadTextFile;
 
 public class ChatResponse {
-    static String database = "teste-api-2";
     static String prompt = ReadTextFile.readFile();
-    static String schema = new DatabaseSchemaExtractor().extractSchema(database);
-    static String lmInput;
-    static String lmOutput;
 
-    public static String getLmResponseFromQuestion(String question) {
-        lmInput = getLmInput(question);
-        lmOutput = LanguageModelInterface.getLMResponse(lmInput);
+    String question;
+    String database;
+    String lModel;
+
+    public ChatResponse(String question, String database, String lModel) {
+        this.question = question;
+        this.database = database;
+        this.lModel = lModel;
+    }
+
+    public String getLmResponseFromQuestion() {
+        String lmInput = getLmInput();
+        String lmOutput = LanguageModelInterface.getLMResponse(lModel, lmInput);
         return lmOutput;
     }
 
-    public static String getLmInput(String question) {
-        lmInput = prompt.replace("{question}", question).replace("{schema}", schema);
+    public String getLmInput() {
+        String schema = new DatabaseSchemaExtractor().extractSchema(database);
+        String lmInput = prompt.replace("{question}", question).replace("{schema}", schema);
         return lmInput;
     }
 }

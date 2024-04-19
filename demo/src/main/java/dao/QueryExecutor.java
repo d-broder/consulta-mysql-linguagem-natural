@@ -8,16 +8,16 @@ import java.util.StringJoiner;
 
 import factory.ConnectionFactory;
 
-public class SQLQuery {
+public class QueryExecutor {
     private Connection connection;
 
-    public SQLQuery(String database) {
+    public QueryExecutor(String database) {
         this.connection = new ConnectionFactory().getConnection(database);
     }
 
-    public String executeQuery(String sql) {
+    public String executeQuery(String query) {
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
             // Cria um StringJoiner para construir a string de resultado

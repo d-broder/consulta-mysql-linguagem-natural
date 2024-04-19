@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import dao.SQLQuery;
+import dao.QueryExecutor;
 import lmi.ChatResponse;
 
 public class ChatBotGUI extends JFrame {
@@ -23,18 +23,17 @@ public class ChatBotGUI extends JFrame {
     private JButton submitButton;
     private JTextArea questionArea;
 
-    public ChatBotGUI() {
+    public ChatBotGUI(String lmodel, String database) {
         setTitle("SQL Query Chatbot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null); // Centraliza a janela na tela
 
-        initComponents();
+        initComponents(lmodel, database);
     }
 
-    private void initComponents() {
-        String database = "teste-api-2";
-        SQLQuery sqlQuery = new SQLQuery(database);
+    private void initComponents(String lmodel, String database) {
+        QueryExecutor sqlQuery = new QueryExecutor(database);
 
         // Painel principal
         JPanel mainPanel = new JPanel();
@@ -60,9 +59,11 @@ public class ChatBotGUI extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Processa a pergunta e exibe a resposta
-                        String sql = ChatResponse.getLmResponseFromQuestion(question);
-                        String answer = sqlQuery.executeQuery(sql);
+                        ChatResponse chatResponse = new ChatResponse(question, database, lmodel);
+
+                        String sql = chatResponse.getLmResponseFromQuestion();
                         System.out.println(sql + "\n");
+                        String answer = sqlQuery.executeQuery(sql);
                         questionArea.setText("Question: " + question + "\nAnswer: \n" + answer);
                     }
                 });
@@ -92,7 +93,7 @@ public class ChatBotGUI extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ChatBotGUI().setVisible(true);
+                new ChatBotGUI("ollama/sqlcoder", "teste-api-2").setVisible(true);
             }
         });
     }

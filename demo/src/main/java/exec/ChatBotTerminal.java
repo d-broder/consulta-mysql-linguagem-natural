@@ -1,24 +1,41 @@
 package exec;
 
-import dao.SQLQuery;
+import dao.QueryExecutor;
 import lmi.ChatResponse;
-import lmi.LanguageModelInterface;
 
 public class ChatBotTerminal {
     public static void main(String[] args) {
-        String database = "teste-api-2";
-        SQLQuery sqlQuery = new SQLQuery(database);
-        String question = "What are the names of all the products in the database?";
-        String lmodel = LanguageModelInterface.getLModel();
-        String lmInput = ChatResponse.getLmInput(question);
+        long startTime = System.currentTimeMillis();
 
-        System.out.println(lmInput);
+        String question = "What are the names of all products?";
+        String database = "teste-api-2";
+        String lModel = "ollama/sqlcoder";
+
+        ChatResponse chatResponse = new ChatResponse(question, database, lModel);
+        QueryExecutor sqlQuery = new QueryExecutor(database);
+
+        System.out.println(chatResponse.getLmInput());
         System.out.println("Processing question...");
 
-        String lmResponse = ChatResponse.getLmResponseFromQuestion(question);
+        String lmResponsed = null;
+        boolean querySuccess = false;
+        String result = null;
+        int attempts = 0;
 
-        System.out.println("- Language model: \"" + lmodel + "\"\n- SQL command: \"" + lmResponse + "\"");
-
-        System.out.println(sqlQuery.executeQuery(lmResponse));
+        while (!querySuccess) {
+            try {
+                lmResponsed = chatResponse.getLmResponseFromQuestion();
+                result = sqlQuery.executeQuery(lmResponsed);
+                querySuccess = true;
+            } catch (Exception e) {
+                attempts++;
+                System.out.println("Error executing SQL query. Retrying... (" + attempts + ")");
+            }
+        }
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+        System.out.println("* Language model: " + lModel + "\n* Total time elapsed (seconds): " + (duration / 1000)
+                + "\n* SQL command: \"" + lmResponsed + "\"\n* Result:");
+        System.out.println(result);
     }
 }
