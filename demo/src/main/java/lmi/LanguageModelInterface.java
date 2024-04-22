@@ -13,9 +13,9 @@ public class LanguageModelInterface {
     private static final List<String> availableModels = new ArrayList<>();
 
     static {
-        availableModels.add("openai");
+        // availableModels.add("openai");
+        availableModels.add("ollama/duckdb-nsql");
         availableModels.add("ollama/sqlcoder");
-        availableModels.add("ollama/nsql");
         availableModels.add("lmstudio");
     }
 
@@ -39,8 +39,8 @@ public class LanguageModelInterface {
             case "ollama/sqlcoder":
                 model = buildOllamaChatModel("sqlcoder");
                 break;
-            case "ollama/nsql":
-                model = buildOllamaChatModel("nsql");
+            case "ollama/duckdb-nsql":
+                model = buildOllamaChatModel("duckdb-nsql");
                 break;
             case "lmstudio":
                 model = buildLocalAiChatModel();

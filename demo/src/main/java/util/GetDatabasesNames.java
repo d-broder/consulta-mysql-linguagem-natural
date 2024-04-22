@@ -9,9 +9,9 @@ import java.util.List;
 
 import factory.ConnectionFactory;
 
-public class GetDatabaseNames {
+public class GetDatabasesNames {
 
-    public List<String> getAllDatabaseNames() {
+    public List<String> getDatabasesNames() {
         List<String> databaseNames = new ArrayList<>();
         Connection connection = null;
 
@@ -46,8 +46,8 @@ public class GetDatabaseNames {
     }
 
     public static void main(String[] args) {
-        GetDatabaseNames getDatabaseNames = new GetDatabaseNames();
-        List<String> databaseNames = getDatabaseNames.getAllDatabaseNames();
+        GetDatabasesNames getDatabaseNames = new GetDatabasesNames();
+        List<String> databaseNames = getDatabaseNames.getDatabasesNames();
         for (String dbName : databaseNames) {
             System.out.println(dbName);
         }

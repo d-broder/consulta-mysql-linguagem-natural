@@ -1,4 +1,4 @@
-package exec;
+package tests;
 
 import dao.QueryExecutor;
 

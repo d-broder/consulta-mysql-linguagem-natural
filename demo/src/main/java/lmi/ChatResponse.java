@@ -1,6 +1,6 @@
 package lmi;
 
-import util.DatabaseSchemaExtractor;
+import util.GetDatabaseSchema;
 import util.ReadTextFile;
 
 public class ChatResponse {
@@ -23,7 +23,7 @@ public class ChatResponse {
     }
 
     public String getLmInput() {
-        String schema = new DatabaseSchemaExtractor().extractSchema(database);
+        String schema = new GetDatabaseSchema().getDatabaseSchema(database);
         String lmInput = prompt.replace("{question}", question).replace("{schema}", schema);
         return lmInput;
     }

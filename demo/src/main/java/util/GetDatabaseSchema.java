@@ -7,9 +7,8 @@ import java.sql.SQLException;
 
 import factory.ConnectionFactory;
 
-public class DatabaseSchemaExtractor {
-
-    public String extractSchema(String database) {
+public class GetDatabaseSchema {
+    public String getDatabaseSchema(String database) {
         Connection connection = null;
         StringBuilder schema = new StringBuilder();
 
@@ -79,8 +78,8 @@ public class DatabaseSchemaExtractor {
     }
 
     public static void main(String[] args) {
-        DatabaseSchemaExtractor extractor = new DatabaseSchemaExtractor();
-        String schema = extractor.extractSchema("teste-api-2");
+        GetDatabaseSchema extractor = new GetDatabaseSchema();
+        String schema = extractor.getDatabaseSchema("teste-api-2");
         System.out.println(schema);
     }
 }

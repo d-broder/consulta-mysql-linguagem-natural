@@ -1,4 +1,4 @@
-package exec;
+package tests;
 
 import dao.QueryExecutor;
 import lmi.ChatResponse;
@@ -9,7 +9,7 @@ public class ChatBotTerminal {
 
         String question = "What are the names of all products?";
         String database = "teste-api-2";
-        String lModel = "ollama/sqlcoder";
+        String lModel = "ollama/duckdb-nsql";
 
         ChatResponse chatResponse = new ChatResponse(question, database, lModel);
         QueryExecutor sqlQuery = new QueryExecutor(database);
