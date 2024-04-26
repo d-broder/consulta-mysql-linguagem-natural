@@ -6,66 +6,61 @@ import java.util.List;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.localai.LocalAiChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import util.CMDCommandExecutor;
 
 public class LanguageModelInterface {
-    // Lista de modelos disponíveis
-    private static final List<String> availableModels = new ArrayList<>();
+    private List<String> OllamaAvailableModels;
+    private List<String> GUIavailableModels;
 
-    static {
-        // availableModels.add("openai");
-        availableModels.add("ollama/duckdb-nsql");
-        availableModels.add("ollama/sqlcoder");
-        availableModels.add("lmstudio");
+    public LanguageModelInterface() {
+        List<String> originalList = CMDCommandExecutor.getOllamaLmsNames();
+
+        OllamaAvailableModels = new ArrayList<>(originalList);
+        GUIavailableModels = new ArrayList<>();
+
+        for (int i = 0; i < originalList.size(); i++) {
+            String element = originalList.get(i);
+            GUIavailableModels.add("Ollama/" + element);
+        }
+        GUIavailableModels.add("LM Studio");
     }
 
     // Método para retornar a lista de modelos
-    public List<String> getAvailableModels() {
-        return new ArrayList<>(availableModels);
+    public List<String> getOllamaAvailableModels() {
+        return OllamaAvailableModels;
     }
 
-    public static String getLMResponse(String lModel, String input) {
+    // Método para retornar a lista de modelos modificada
+    public List<String> getGUIavailableModels() {
+        return GUIavailableModels;
+    }
+
+    public static String getLMResponse(int lModelIndex, String input) {
         ChatLanguageModel model;
+        LanguageModelInterface lmi = new LanguageModelInterface();
+        List<String> availableModels = lmi.getOllamaAvailableModels();
 
-        // Verifica se o modelo especificado é válido
-        if (!availableModels.contains(lModel)) {
-            throw new IllegalArgumentException("Invalid LM type: " + lModel);
-        }
-
-        switch (lModel) {
-            case "openai":
-                model = OpenAiChatModel.withApiKey("demo");
-                break;
-            case "ollama/sqlcoder":
-                model = buildOllamaChatModel("sqlcoder");
-                break;
-            case "ollama/duckdb-nsql":
-                model = buildOllamaChatModel("duckdb-nsql");
-                break;
-            case "lmstudio":
-                model = buildLocalAiChatModel();
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid LM type: " + lModel);
+        if (lModelIndex == availableModels.size() - 1) {
+            model = LocalAiChatModel.builder()
+                    .baseUrl("http://localhost:1234/v1/")
+                    .modelName("anyModelName")
+                    .temperature(0.6)
+                    .build();
+        } else {
+            model = OllamaChatModel.builder()
+                    .baseUrl("http://localhost:11434")
+                    .modelName(lmi.getOllamaAvailableModels().get(lModelIndex))
+                    .build();
         }
 
         return model.generate(input);
     }
 
-    // Ollama
-    private static OllamaChatModel buildOllamaChatModel(String modelName) {
-        return OllamaChatModel.builder()
-                .baseUrl("http://localhost:11434")
-                .modelName(modelName)
-                .build();
-    }
-
-    // LMStudio
-    private static LocalAiChatModel buildLocalAiChatModel() {
-        return LocalAiChatModel.builder()
-                .baseUrl("http://localhost:1234/v1/")
-                .modelName("anyModelName")
-                .temperature(0.6)
-                .build();
+    public static void main(String[] args) {
+        LanguageModelInterface lmi = new LanguageModelInterface();
+        List<String> availableModels = lmi.getOllamaAvailableModels();
+        List<String> availableModelsGUI = lmi.getGUIavailableModels();
+        System.out.println(availableModels);
+        System.out.println(availableModelsGUI);
     }
 }

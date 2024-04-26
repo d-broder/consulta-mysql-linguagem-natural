@@ -50,7 +50,7 @@ public class ChatBotGUI extends JFrame {
         JLabel lmLabel = new JLabel("Language model:");
         lmDropdown = new JComboBox<>();
         LanguageModelInterface lmi = new LanguageModelInterface();
-        List<String> lmOptions = lmi.getAvailableModels();
+        List<String> lmOptions = lmi.getGUIavailableModels();
         for (String option : lmOptions) {
             lmDropdown.addItem(option);
         }
@@ -92,9 +92,9 @@ public class ChatBotGUI extends JFrame {
                 String question = questionField.getText();
                 questionArea.setText("Processing question...");
 
-                String selectedLmOption = (String) lmDropdown.getSelectedItem();
+                int selectedLmIndex = lmDropdown.getSelectedIndex();
                 String selectedDbOption = (String) dbDropdown.getSelectedItem();
-                ChatResponse chatResponse = new ChatResponse(question, selectedDbOption, selectedLmOption);
+                ChatResponse chatResponse = new ChatResponse(question, selectedDbOption, selectedLmIndex);
 
                 String sql = chatResponse.getLmResponseFromQuestion();
                 System.out.println(sql + "\n");

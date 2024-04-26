@@ -2,16 +2,20 @@ package tests;
 
 import dao.QueryExecutor;
 import lmi.ChatResponse;
+import lmi.LanguageModelInterface;
 
 public class ChatBotTerminal {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
+        LanguageModelInterface lmi = new LanguageModelInterface();
 
         String question = "What are the names of all products?";
         String database = "teste-api-2";
-        String lModel = "ollama/duckdb-nsql";
+        int lModelIndex = 0;
 
-        ChatResponse chatResponse = new ChatResponse(question, database, lModel);
+        String lModel = lmi.getGUIavailableModels().get(lModelIndex);
+
+        ChatResponse chatResponse = new ChatResponse(question, database, lModelIndex);
         QueryExecutor sqlQuery = new QueryExecutor(database);
 
         System.out.println(chatResponse.getLmInput());
