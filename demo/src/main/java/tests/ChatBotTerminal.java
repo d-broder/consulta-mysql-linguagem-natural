@@ -9,7 +9,7 @@ public class ChatBotTerminal {
         long startTime = System.currentTimeMillis();
         LanguageModelInterface lmi = new LanguageModelInterface();
 
-        String question = "What are the names of all products?";
+        String question = "How many products?";
         String database = "teste-api-2";
         int lModelIndex = 0;
 

@@ -11,6 +11,7 @@ import util.CMDCommandExecutor;
 public class LanguageModelInterface {
     private List<String> OllamaAvailableModels;
     private List<String> GUIavailableModels;
+    private static int numModels;
 
     public LanguageModelInterface() {
         List<String> originalList = CMDCommandExecutor.getOllamaLmsNames();
@@ -23,6 +24,8 @@ public class LanguageModelInterface {
             GUIavailableModels.add("Ollama/" + element);
         }
         GUIavailableModels.add("LM Studio");
+
+        numModels = GUIavailableModels.size();
     }
 
     // Método para retornar a lista de modelos
@@ -38,9 +41,8 @@ public class LanguageModelInterface {
     public static String getLMResponse(int lModelIndex, String input) {
         ChatLanguageModel model;
         LanguageModelInterface lmi = new LanguageModelInterface();
-        List<String> availableModels = lmi.getOllamaAvailableModels();
 
-        if (lModelIndex == availableModels.size() - 1) {
+        if (lModelIndex == numModels - 1) {
             model = LocalAiChatModel.builder()
                     .baseUrl("http://localhost:1234/v1/")
                     .modelName("anyModelName")
