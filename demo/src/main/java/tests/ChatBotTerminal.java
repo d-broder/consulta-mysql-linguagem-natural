@@ -36,6 +36,7 @@ public class ChatBotTerminal {
                 System.out.println("Error executing SQL query. Retrying... (" + attempts + ")");
             }
         }
+
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("* Language model: " + lModel + "\n* Total time elapsed (seconds): " + (duration / 1000)
