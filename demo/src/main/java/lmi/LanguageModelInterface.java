@@ -1,7 +1,10 @@
 package lmi;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.localai.LocalAiChatModel;
@@ -9,21 +12,35 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import util.CMDCommandExecutor;
 
 public class LanguageModelInterface {
-    private List<String> OllamaAvailableModels;
+    private static List<String> OllamaAvailableModels;
+    private List<String> LMStudioAvailableModels;
     private List<String> GUIavailableModels;
     private static int numModels;
 
     public LanguageModelInterface() {
-        List<String> originalList = CMDCommandExecutor.getOllamaLmsNames();
+        List<String> originalOllamaList = CMDCommandExecutor.getOllamaLmsNames();
+        List<String> originalLMStudioList = CMDCommandExecutor.getLMStudioLmsNames();
+        Pattern pattern = Pattern.compile("([^/]+)\\-[^/]+\\.([^/]+)\\.gguf");
 
-        OllamaAvailableModels = new ArrayList<>(originalList);
+        OllamaAvailableModels = new ArrayList<>(originalOllamaList);
+        LMStudioAvailableModels = new ArrayList<>(originalLMStudioList);
+
         GUIavailableModels = new ArrayList<>();
 
-        for (int i = 0; i < originalList.size(); i++) {
-            String element = originalList.get(i);
+        for (int i = 0; i < originalOllamaList.size(); i++) {
+            String element = originalOllamaList.get(i);
             GUIavailableModels.add("Ollama/" + element);
         }
-        GUIavailableModels.add("LM Studio");
+
+        for (int i = 0; i < originalLMStudioList.size(); i++) {
+            String element = originalLMStudioList.get(i);
+            Matcher matcher = pattern.matcher(element);
+            if (matcher.find()) {
+                String nome = matcher.group(1);
+                String tipo = matcher.group(2);
+                GUIavailableModels.add("LM Studio/" + nome + "." + tipo);
+            }
+        }
 
         numModels = GUIavailableModels.size();
     }
@@ -31,6 +48,11 @@ public class LanguageModelInterface {
     // Método para retornar a lista de modelos
     public List<String> getOllamaAvailableModels() {
         return OllamaAvailableModels;
+    }
+
+    // Método para retornar a quantidade de modelos
+    public int getNumOllamaModels() {
+        return OllamaAvailableModels.size();
     }
 
     // Método para retornar a lista de modelos modificada
@@ -42,7 +64,20 @@ public class LanguageModelInterface {
         ChatLanguageModel model;
         LanguageModelInterface lmi = new LanguageModelInterface();
 
-        if (lModelIndex == numModels - 1) {
+        if (lModelIndex >= OllamaAvailableModels.size()) {
+            int lmsIndex = lModelIndex - OllamaAvailableModels.size();
+            String lmModel = lmi.LMStudioAvailableModels.get(lmsIndex);
+
+            try {
+                CMDCommandExecutor.executeCommand("lms load <" + lmModel + "> --gpu max -y");
+            } catch (IOException e) {
+                // Handle IOException
+            } catch (InterruptedException e) {
+                // Handle InterruptedException
+            }
+
+            System.out.println(lmModel);
+
             model = LocalAiChatModel.builder()
                     .baseUrl("http://localhost:1234/v1/")
                     .modelName("anyModelName")
@@ -62,7 +97,10 @@ public class LanguageModelInterface {
         LanguageModelInterface lmi = new LanguageModelInterface();
         List<String> availableModels = lmi.getOllamaAvailableModels();
         List<String> availableModelsGUI = lmi.getGUIavailableModels();
-        System.out.println(availableModels);
-        System.out.println(availableModelsGUI);
+
+        for (String modelo : availableModelsGUI) {
+            System.out.println("* " + modelo);
+        }
+
     }
 }
