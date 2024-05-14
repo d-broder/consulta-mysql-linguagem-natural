@@ -15,7 +15,6 @@ public class LanguageModelInterface {
     private static List<String> OllamaAvailableModels;
     private List<String> LMStudioAvailableModels;
     private List<String> GUIavailableModels;
-    private static int numModels;
 
     public LanguageModelInterface() {
         List<String> originalOllamaList = CMDCommandExecutor.getOllamaLmsNames();
@@ -41,8 +40,6 @@ public class LanguageModelInterface {
                 GUIavailableModels.add("LM Studio/" + nome + "." + tipo);
             }
         }
-
-        numModels = GUIavailableModels.size();
     }
 
     // Método para retornar a lista de modelos
@@ -69,14 +66,13 @@ public class LanguageModelInterface {
             String lmModel = lmi.LMStudioAvailableModels.get(lmsIndex);
 
             try {
-                CMDCommandExecutor.executeCommand("lms load <" + lmModel + "> --gpu max -y");
+                CMDCommandExecutor.executeCommand("lms unload --all");
+                CMDCommandExecutor.executeCommand("lms load " + lmModel + " --gpu max -y");
             } catch (IOException e) {
                 // Handle IOException
             } catch (InterruptedException e) {
                 // Handle InterruptedException
             }
-
-            System.out.println(lmModel);
 
             model = LocalAiChatModel.builder()
                     .baseUrl("http://localhost:1234/v1/")
@@ -95,7 +91,6 @@ public class LanguageModelInterface {
 
     public static void main(String[] args) {
         LanguageModelInterface lmi = new LanguageModelInterface();
-        List<String> availableModels = lmi.getOllamaAvailableModels();
         List<String> availableModelsGUI = lmi.getGUIavailableModels();
 
         for (String modelo : availableModelsGUI) {

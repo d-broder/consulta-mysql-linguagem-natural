@@ -26,6 +26,12 @@ public class CMDCommandExecutor {
     public static void executeCommand(String command) throws IOException, InterruptedException {
         @SuppressWarnings("deprecation")
         Process process = Runtime.getRuntime().exec(command);
+
+        try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            while ((input.readLine()) != null) {
+            }
+        }
+
         process.waitFor();
     }
 
@@ -34,11 +40,13 @@ public class CMDCommandExecutor {
 
         @SuppressWarnings("deprecation")
         Process process = Runtime.getRuntime().exec(command);
+
         process.waitFor();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         while ((line = reader.readLine()) != null) {
+            System.out.println("* " + line);
             resultList.add(line);
         }
         reader.close();

@@ -38,7 +38,7 @@ public class ChatBotGUI extends JFrame {
     public ChatBotGUI() {
         setTitle("Database Selection & Chatbot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setSize(800, 400);
         setLocationRelativeTo(null); // Centralize window on screen
 
         initComponents();
