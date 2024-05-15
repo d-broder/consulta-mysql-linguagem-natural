@@ -7,13 +7,12 @@ import lmi.LanguageModelInterface;
 public class ChatBotTerminal {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
-        LanguageModelInterface lmi = new LanguageModelInterface();
 
         String question = "How many products?";
         String database = "teste-api-2";
-        int lModelIndex = 0;
+        int lModelIndex = 3;
 
-        String lModel = lmi.getGUIavailableModels().get(lModelIndex);
+        String lModel = LanguageModelInterface.getGUIavailableModels().get(lModelIndex);
 
         ChatResponse chatResponse = new ChatResponse(question, database, lModelIndex);
         QueryExecutor sqlQuery = new QueryExecutor(database);

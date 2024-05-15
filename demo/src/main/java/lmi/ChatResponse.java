@@ -6,9 +6,9 @@ import util.ReadTextFile;
 public class ChatResponse {
     static String prompt = ReadTextFile.readFile();
 
-    String question;
-    String database;
-    int lModelIndex;
+    private String question;
+    private String database;
+    private int lModelIndex;
 
     public ChatResponse(String question, String database, int lModelIndex) {
         this.question = question;

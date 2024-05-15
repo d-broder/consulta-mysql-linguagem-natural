@@ -63,8 +63,7 @@ public class ChatBotGUI extends JFrame {
 
         JLabel lmLabel = new JLabel("Language model:");
         lmDropdown = new JComboBox<>();
-        LanguageModelInterface lmi = new LanguageModelInterface();
-        List<String> lmOptions = lmi.getGUIavailableModels();
+        List<String> lmOptions = LanguageModelInterface.getGUIavailableModels();
         for (String option : lmOptions) {
             lmDropdown.addItem(option);
         }

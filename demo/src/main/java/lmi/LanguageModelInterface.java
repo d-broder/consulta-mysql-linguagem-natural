@@ -13,26 +13,27 @@ import util.CMDCommandExecutor;
 
 public class LanguageModelInterface {
     private static List<String> OllamaAvailableModels;
-    private List<String> LMStudioAvailableModels;
-    private List<String> GUIavailableModels;
+    private static List<String> LMStudioAvailableModels;
+    private static List<String> GUIavailableModels;
 
-    public LanguageModelInterface() {
+    static {
+        initializeLists();
+    }
+
+    private static void initializeLists() {
         List<String> originalOllamaList = CMDCommandExecutor.getOllamaLmsNames();
         List<String> originalLMStudioList = CMDCommandExecutor.getLMStudioLmsNames();
         Pattern pattern = Pattern.compile("([^/]+)\\-[^/]+\\.([^/]+)\\.gguf");
 
         OllamaAvailableModels = new ArrayList<>(originalOllamaList);
         LMStudioAvailableModels = new ArrayList<>(originalLMStudioList);
-
         GUIavailableModels = new ArrayList<>();
 
-        for (int i = 0; i < originalOllamaList.size(); i++) {
-            String element = originalOllamaList.get(i);
+        for (String element : originalOllamaList) {
             GUIavailableModels.add("Ollama/" + element);
         }
 
-        for (int i = 0; i < originalLMStudioList.size(); i++) {
-            String element = originalLMStudioList.get(i);
+        for (String element : originalLMStudioList) {
             Matcher matcher = pattern.matcher(element);
             if (matcher.find()) {
                 String nome = matcher.group(1);
@@ -42,28 +43,24 @@ public class LanguageModelInterface {
         }
     }
 
-    // Método para retornar a lista de modelos
-    public List<String> getOllamaAvailableModels() {
+    public static List<String> getOllamaAvailableModels() {
         return OllamaAvailableModels;
     }
 
-    // Método para retornar a quantidade de modelos
-    public int getNumOllamaModels() {
+    public static int getNumOllamaModels() {
         return OllamaAvailableModels.size();
     }
 
-    // Método para retornar a lista de modelos modificada
-    public List<String> getGUIavailableModels() {
+    public static List<String> getGUIavailableModels() {
         return GUIavailableModels;
     }
 
     public static String getLMResponse(int lModelIndex, String input) {
         ChatLanguageModel model;
-        LanguageModelInterface lmi = new LanguageModelInterface();
 
         if (lModelIndex >= OllamaAvailableModels.size()) {
             int lmsIndex = lModelIndex - OllamaAvailableModels.size();
-            String lmModel = lmi.LMStudioAvailableModels.get(lmsIndex);
+            String lmModel = LMStudioAvailableModels.get(lmsIndex);
 
             try {
                 CMDCommandExecutor.executeCommand("lms unload --all");
@@ -77,25 +74,20 @@ public class LanguageModelInterface {
             model = LocalAiChatModel.builder()
                     .baseUrl("http://localhost:1234/v1/")
                     .modelName("anyModelName")
-                    .temperature(0.6)
+                    .temperature(0.1)
                     .build();
         } else {
             model = OllamaChatModel.builder()
                     .baseUrl("http://localhost:11434")
-                    .modelName(lmi.getOllamaAvailableModels().get(lModelIndex))
+                    .modelName(OllamaAvailableModels.get(lModelIndex))
                     .build();
         }
-
         return model.generate(input);
     }
 
     public static void main(String[] args) {
-        LanguageModelInterface lmi = new LanguageModelInterface();
-        List<String> availableModelsGUI = lmi.getGUIavailableModels();
-
-        for (String modelo : availableModelsGUI) {
+        for (String modelo : GUIavailableModels) {
             System.out.println("* " + modelo);
         }
-
     }
 }
