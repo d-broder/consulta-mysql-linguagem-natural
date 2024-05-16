@@ -38,7 +38,7 @@ public class QueryExecutor {
 
             return result.toString(); // Retorna a string de resultado
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return "[ERRO]";
         }
     }
 }

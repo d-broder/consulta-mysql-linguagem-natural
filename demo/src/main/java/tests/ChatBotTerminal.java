@@ -2,44 +2,32 @@ package tests;
 
 import dao.QueryExecutor;
 import lmi.ChatResponse;
-import lmi.LanguageModelInterface;
 
 public class ChatBotTerminal {
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
+        String question = "Qual é o continente e a população do país United States?";
+        String database = "world";
+        double temperature = 0.0;
 
-        String question = "How many products?";
-        String database = "teste-api-2";
-        int lModelIndex = 3;
+        while (temperature < 1) {
+            long startTime = System.currentTimeMillis();
+            System.out.println("\n** Temperature: " + temperature);
 
-        String lModel = LanguageModelInterface.getGUIavailableModels().get(lModelIndex);
+            ChatResponse chatResponse = new ChatResponse(question, database, temperature);
+            QueryExecutor sqlQuery = new QueryExecutor(database);
 
-        ChatResponse chatResponse = new ChatResponse(question, database, lModelIndex);
-        QueryExecutor sqlQuery = new QueryExecutor(database);
+            String lmResponsed = null;
+            String result = null;
 
-        System.out.println(chatResponse.getLmInput());
-        System.out.println("Processing question...");
+            lmResponsed = chatResponse.getLmResponseFromQuestion();
+            result = sqlQuery.executeQuery(lmResponsed);
 
-        String lmResponsed = null;
-        boolean querySuccess = false;
-        String result = null;
-        int attempts = 0;
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            System.out.println("* Time (seconds): " + (duration / 1000)
+                    + "\n* SQL command: \"" + lmResponsed + "\"\n* Result: " + result);
 
-        while (!querySuccess) {
-            try {
-                lmResponsed = chatResponse.getLmResponseFromQuestion();
-                result = sqlQuery.executeQuery(lmResponsed);
-                querySuccess = true;
-            } catch (Exception e) {
-                attempts++;
-                System.out.println("Error executing SQL query. Retrying... (" + attempts + ")");
-            }
+            temperature += 0.01;
         }
-
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        System.out.println("* Language model: " + lModel + "\n* Total time elapsed (seconds): " + (duration / 1000)
-                + "\n* SQL command: \"" + lmResponsed + "\"\n* Result:");
-        System.out.println(result);
     }
 }

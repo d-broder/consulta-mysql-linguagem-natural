@@ -8,17 +8,17 @@ public class ChatResponse {
 
     private String question;
     private String database;
-    private int lModelIndex;
+    private double temperature;
 
-    public ChatResponse(String question, String database, int lModelIndex) {
+    public ChatResponse(String question, String database, double temperature) {
         this.question = question;
         this.database = database;
-        this.lModelIndex = lModelIndex;
+        this.temperature = temperature;
     }
 
     public String getLmResponseFromQuestion() {
         String lmInput = getLmInput();
-        String lmOutput = LanguageModelInterface.getLMResponse(lModelIndex, lmInput);
+        String lmOutput = LanguageModelInterface.getLMResponse(lmInput, temperature);
         return lmOutput;
     }
 
