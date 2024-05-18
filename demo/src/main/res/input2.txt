@@ -1,0 +1,16 @@
+Task
+Generate a SQL query to answer "{question}"
+
+
+Instructions
+If you cannot answer the question with the available database schema, return 'Eu não sei'
+
+
+Database Schema
+The query will run on a database with the following schema:
+
+{schema}
+
+
+Answer
+Given the database schema, here is the SQL query that answers "{question}"

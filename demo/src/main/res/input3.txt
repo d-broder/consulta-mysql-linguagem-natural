@@ -1,0 +1,8 @@
+Generate a SQL query that can be executed on a database to answer a specific question based on the given database schema. The question is:
+"{question}"
+
+Your SQL query should be constructed based on the provided database schema below.
+
+{schema}
+
+Please ensure that your response contains only the SQL query.

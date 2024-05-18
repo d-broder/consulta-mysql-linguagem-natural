@@ -1,5 +1,10 @@
 package lmi;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.localai.LocalAiChatModel;
 
@@ -12,6 +17,17 @@ public class LanguageModelInterface {
                 .modelName("anyModelName")
                 .temperature(temperature)
                 .build();
-        return model.generate(input);
+
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> model.generate(input));
+
+        try {
+            return future.get(120, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            return "[ERRO]";
+        } catch (InterruptedException | ExecutionException e) {
+            // Log exception (if needed) and return error message
+            e.printStackTrace();
+            return "[ERRO]";
+        }
     }
 }

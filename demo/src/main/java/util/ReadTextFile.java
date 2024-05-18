@@ -5,10 +5,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class ReadTextFile {
-
-    public static String readFile() {
+    public static String readInputFile(int inputFileNumber) {
         try {
-            File filePath = new File("demo/src/main/res/input.txt");
+            File filePath = new File("demo/src/main/res/input" + inputFileNumber + ".txt");
 
             Scanner scanner = new Scanner(filePath);
             StringBuilder content = new StringBuilder();
@@ -29,6 +28,6 @@ public class ReadTextFile {
     }
 
     public static void main(String[] args) {
-        System.out.println(readFile());
+        System.out.println(readInputFile(3));
     }
 }
