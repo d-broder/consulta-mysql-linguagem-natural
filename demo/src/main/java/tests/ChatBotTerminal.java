@@ -18,24 +18,42 @@ import lmi.ChatResponse;
 import util.CMDCommandExecutor;
 
 public class ChatBotTerminal {
+    private static Workbook workbook;
+    private static FileOutputStream fileOut;
+    private static Sheet sheet;
+    private static long totalStartTime;
+
     public static void main(String[] args) {
         List<String> questions = Arrays.asList(
-                "Qual é a população e o continente do país Estados Unidos?",
-                "Qual é a população dos Estados Unidos?",
-                "Quantos países têm a população maior que 100 milhões?");
+                "Qual é a cidade com a maior população",
+                "Qual é o país com a maior população",
+                "Quantos países tem a população maior ou igual a população do Brasil?",
+                "Quantos países existem na Europa?",
+                "Which city has the largest population",
+                "Which country has the largest population",
+                "How many countries have a population greater than or equal to the population of Brazil?",
+                "How many countries are there in Europe?");
 
         String database = "world";
-        long totalStartTime = System.currentTimeMillis();
+        int numberInputFiles = 3;
+
+        // Definição das condições iniciais
+        int startInputFileNumber = 2;
+        int startQuestionNumber = 7;
+        double startTemperature = 0.80;
+
+        totalStartTime = System.currentTimeMillis();
 
         // Verifica se o arquivo Excel já existe
         String filePath = "ChatBotData.xlsx";
         File file = new File(filePath);
 
-        try (Workbook workbook = (file.exists() ? new XSSFWorkbook(new FileInputStream(file)) : new XSSFWorkbook());
-                FileOutputStream fileOut = new FileOutputStream(filePath)) {
+        try {
+            workbook = (file.exists() ? new XSSFWorkbook(new FileInputStream(file)) : new XSSFWorkbook());
+            fileOut = new FileOutputStream(filePath);
 
             // Se o arquivo Excel não tiver uma planilha "ChatBot Data", crie uma
-            Sheet sheet = workbook.getSheet("ChatBot Data");
+            sheet = workbook.getSheet("ChatBot Data");
             if (sheet == null) {
                 sheet = workbook.createSheet("ChatBot Data");
                 // Criação da linha de cabeçalho se o arquivo Excel for recém-criado
@@ -48,6 +66,19 @@ public class ChatBotTerminal {
                 }
             }
 
+            // Registra o shutdown hook
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    if (workbook != null && fileOut != null) {
+                        workbook.write(fileOut);
+                        fileOut.close();
+                        System.out.println("Workbook saved successfully.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }));
+
             // Carregar o modelo de linguagem
             try {
                 CMDCommandExecutor.executeCommand("lms unload --all");
@@ -59,10 +90,22 @@ public class ChatBotTerminal {
                 Thread.currentThread().interrupt();
             }
 
-            for (int inputFileNumber = 1; inputFileNumber <= 4; inputFileNumber++) {
-                for (String question : questions) {
-                    double temperature = 0.0;
-                    while (temperature < 1) {
+            boolean startConditionMet = false;
+
+            for (int inputFileNumber = 1; inputFileNumber <= numberInputFiles; inputFileNumber++) {
+                for (int questionNumber = 1; questionNumber <= questions.size(); questionNumber++) {
+                    String question = questions.get(questionNumber - 1); // Ajusta para índice zero
+
+                    double initialTemperature = 0.0;
+                    if (inputFileNumber == startInputFileNumber && questionNumber == startQuestionNumber) {
+                        initialTemperature = startTemperature; // Define a temperatura inicial a partir da condição
+                                                               // inicial
+                        startConditionMet = true;
+                    } else if (!startConditionMet) {
+                        continue; // Pula as iterações até encontrar a condição inicial
+                    }
+
+                    for (double temperature = initialTemperature; temperature < 1; temperature += 0.05) {
                         long startTime = System.currentTimeMillis();
 
                         ChatResponse chatResponse = new ChatResponse(question, database, temperature, inputFileNumber);
@@ -89,16 +132,14 @@ public class ChatBotTerminal {
                         row.createCell(5).setCellValue(lmResponse);
                         row.createCell(6).setCellValue(result);
 
-                        System.out.println("* Input File Number: " + inputFileNumber + ", Question Index: "
-                                + questions.indexOf(question)
-                                + ", Temperature: "
-                                + temperature + ", Time (minutes): " + (totalDuration / 60000) + ", Result: " + result);
-
-                        temperature += 0.05;
+                        System.out.println("* Input File: " + inputFileNumber + "/" + numberInputFiles
+                                + ", Question Number: " + questionNumber + "/" + questions.size()
+                                + ", Temperature: " + String.format("%.2f", temperature)
+                                + ", Time (minutes): " + (totalDuration / 60000)
+                                + ", Result: " + result);
                     }
                 }
             }
-            workbook.write(fileOut);
         } catch (IOException e) {
             e.printStackTrace();
         }

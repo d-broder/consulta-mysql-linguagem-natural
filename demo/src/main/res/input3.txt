@@ -1,8 +1,16 @@
-Generate a SQL query that can be executed on a database to answer a specific question based on the given database schema. The question is:
-"{question}"
+Task
+Generate a SQL query to answer "{question}"
 
-Your SQL query should be constructed based on the provided database schema below.
+
+Instructions
+If you cannot answer the question with the available database schema, return 'Eu não sei'
+
+
+Database Schema
+The query will run on a database with the following schema:
 
 {schema}
 
-Please ensure that your response contains only the SQL query.
+
+Answer
+Given the database schema, here is the SQL query that answers "{question}"
