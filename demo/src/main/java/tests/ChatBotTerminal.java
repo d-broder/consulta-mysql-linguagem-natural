@@ -35,12 +35,12 @@ public class ChatBotTerminal {
                 "How many countries are there in Europe?");
 
         String database = "world";
-        int numberInputFiles = 3;
+        int numberInputFiles = 4;
 
         // Definição das condições iniciais
-        int startInputFileNumber = 2;
-        int startQuestionNumber = 7;
-        double startTemperature = 0.80;
+        int startInputFileNumber = 1;
+        int startQuestionNumber = 1;
+        double startTemperature = 0;
 
         totalStartTime = System.currentTimeMillis();
 

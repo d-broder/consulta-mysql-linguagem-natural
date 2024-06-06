@@ -3,7 +3,7 @@ Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
 
 
 Instructions
-If you cannot answer the question with the available database schema, return 'Eu não sei'
+If you cannot answer the question with the available database schema, return 'Eu não sei'.
 
 
 Database Schema
